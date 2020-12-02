@@ -1,0 +1,22 @@
+<section class="content-header">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-6">
+          <h5>Chat with:{{userName | localize }}</h5>
+        </div>
+        <div class="col-6 text-right">
+          <a href="javascript:;" class="btn bg-blue" (click)="SendMessage(friendId)">
+            <i class="fa fa-plus-square"></i>
+            {{ "Send Message" | localize }}
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+<div *ngFor="let c of chatList">
+    <label *ngIf="c.senderId==userId">Me:&nbsp;&nbsp;<button (click)="ShowOptions(c.id)">{{c.message}}</button><br><i> 
+        {{c.creationTime | date:'medium'}}</i></label>
+        
+    <label *ngIf="c.senderId==friendId">{{userName}}:&nbsp;&nbsp;<button (click)="ShowOptions(c.id)">{{c.message}}</button><br>
+         <i>{{c.creationTime | date:'medium'}}</i></label>
+         </div>

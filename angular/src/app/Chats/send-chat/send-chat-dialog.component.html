@@ -1,0 +1,16 @@
+<form #form="ngForm" ngNativeValidate 
+  class="form-horizontal"
+  autocomplete="off"
+>
+  <abp-modal-header
+    [title]="'Create New Message' | localize"
+  ></abp-modal-header>
+
+<div>
+     <label>Message</label><br>
+     <textarea type="textarea" id="nameInput" name="Message" placeholder="Your message" [(ngModel)]="chat.message" required></textarea><br /><br />
+      <br /><br />
+      <button type="submit" class="btn btn-success" (click)="save()" [disabled]="form.invalid">Send</button>
+      <button class="btn btn-danger" (click)="Back()">cancel</button>
+</div>
+</form>

@@ -1,0 +1,26 @@
+﻿using Abp.Application.Services.Dto;
+using Abp.AutoMapper;
+using ChatApplication.Domain;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ChatApplication.Services.DTO
+{
+    [AutoMap(typeof(Chat))]
+   public class ChatDTO:EntityDto
+    {
+        public string Message { get; set; }
+        public virtual DateTime CreationTime { get; set; }
+        public bool isRead { get; set; }
+        public long? senderId { get; set; }
+        public long? receiverId { get; set; }
+
+        public ChatDTO()
+        {
+            CreationTime = DateTime.Now;
+        }
+    }
+}
