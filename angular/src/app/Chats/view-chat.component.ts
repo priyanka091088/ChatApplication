@@ -1,5 +1,5 @@
 import { Component, Injector, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { AppComponentBase } from '@shared/app-component-base';
 import { PagedListingComponentBase, PagedRequestDto } from '@shared/paged-listing-component-base';
 import { ChatDTO, ChatServiceProxy, UserDto, UserDtoPagedResultDto, UserServiceProxy } from '@shared/service-proxies/service-proxies';
@@ -43,17 +43,16 @@ class PagedUsersRequestDto extends PagedRequestDto {
         finishedCallback: Function
       ): void {
         request.keyword = this.keyword;
+        this.route.paramMap.subscribe((params: ParamMap) => {
+          this.friendId = +params.get('id');
+          console.log(this.friendId)
 
-        const id=+(this.route.snapshot.paramMap.get('id'));
-        console.log(id);
-        this.friendId=id;
-        console.log(this.friendId)
-        this.userService.get(id).subscribe(
-            res=>{
-                this.userName=res.userName;
-            }
-        )
-        let userdetail=this.appservice.user;
+          this.userService.get(this.friendId).subscribe(
+          res=>{
+              this.userName=res.userName;
+          }
+      )
+      let userdetail=this.appservice.user;
         this.userId=userdetail.id;
         console.log(this.userId);
         
@@ -71,11 +70,24 @@ class PagedUsersRequestDto extends PagedRequestDto {
           .subscribe({
             next:res => {
                 this.chatDetails = res.items;
-                this.chatList=this.chatDetails.filter(c=>c.senderId==this.userId && c.receiverId==id 
-                    || c.receiverId==this.userId && c.senderId==id);
+                this.chatList=this.chatDetails.filter(c=>c.senderId==this.userId && c.receiverId==this.friendId 
+                    || c.receiverId==this.userId && c.senderId==this.friendId);
                 console.log(this.chatList);
           }
         });
+         /*for(var i=0;i<this.chatDetails.length;i++){
+           if(this.chatDetails[i].isRead!=true){
+            this.chatDetails[i].isRead=true;
+            this.chatService.update(this.chatDetails[i]).subscribe(
+              res=>{
+                console.log("isread=true");
+              }
+            )
+           }
+
+         }*/
+      });
+        
       }
     
       protected delete(user: UserDto): void {

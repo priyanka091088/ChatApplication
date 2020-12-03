@@ -52,7 +52,7 @@ class PagedUsersRequestDto extends PagedRequestDto {
             next:res => {
                 this.users = res.items;
                 console.log(this.users);
-                //console.log(this.users[0].id)
+                
           }
         });
       }
