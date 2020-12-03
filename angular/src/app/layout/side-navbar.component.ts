@@ -1,9 +1,10 @@
 import { Component, Injector, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { AppComponentBase } from '@shared/app-component-base';
 import { PagedListingComponentBase, PagedRequestDto } from '@shared/paged-listing-component-base';
-import { UserDto, UserDtoPagedResultDto, UserServiceProxy } from '@shared/service-proxies/service-proxies';
+import { ChatDTO, ChatServiceProxy, UserDto, UserDtoPagedResultDto, UserServiceProxy } from '@shared/service-proxies/service-proxies';
 import { AppSessionService } from '@shared/session/app-session.service';
+import { SSL_OP_SSLEAY_080_CLIENT_DH_BUG } from 'constants';
 import { finalize } from 'rxjs/operators';
 
 class PagedUsersRequestDto extends PagedRequestDto {
@@ -20,8 +21,13 @@ class PagedUsersRequestDto extends PagedRequestDto {
     keyword = '';
     isActive: boolean | null;
     users: UserDto[] = [];
+    chatDetails:ChatDTO[]=[];
+    chatList:ChatDTO[];
+    counter:number[]=[];
     userId:number;
-    constructor(injector: Injector, private router: Router,private userService:UserServiceProxy,private appservice:AppSessionService) {
+    a:number=0;
+    constructor(injector: Injector, private router: Router,private userService:UserServiceProxy,
+      private appservice:AppSessionService,private chatService:ChatServiceProxy,private route:ActivatedRoute) {
         super(injector);
       }
     list(
@@ -31,10 +37,27 @@ class PagedUsersRequestDto extends PagedRequestDto {
       ): void {
         request.keyword = this.keyword;
         request.isActive = this.isActive;
-
-        let userdetail=this.appservice.user;
+        this.route.paramMap.subscribe((params: ParamMap) => {
+          let userdetail=this.appservice.user;
         this.userId=userdetail.id;
         console.log(this.userId);
+
+        this.chatService
+        .getAll(
+          request.keyword,
+          request.skipCount,
+          request.maxResultCount
+        )
+        .pipe(
+          finalize(() => {
+            finishedCallback();
+          })
+        )
+        .subscribe({
+          next:res => {
+              this.chatDetails = res.items;
+        }
+      });
 
         this.userService
           .getAll(
@@ -52,11 +75,27 @@ class PagedUsersRequestDto extends PagedRequestDto {
             next:res => {
                 this.users = res.items;
                 console.log(this.users);
-                
+
+                for(var i=0;i<this.users.length;i++){
+          
+                  if(this.users[i].id!=this.userId){
+                    
+                      this.chatList=this.chatDetails.filter(c=>c.isRead==false && ((c.senderId==this.userId && c.receiverId==this.users[i].id) 
+                        || (c.receiverId==this.userId && c.senderId==this.users[i].id)));
+                        console.log(this.chatList)
+                    this.counter[this.a]=this.chatList.length;
+                    console.log(this.a);
+                    this.a++;
+                  }
+                }
+                console.log(this.counter);
+               
           }
         });
+        });
+        
       }
-    
+      
       protected delete(user: UserDto): void {
       }
   }

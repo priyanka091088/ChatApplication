@@ -26,7 +26,7 @@ class PagedUsersRequestDto extends PagedRequestDto {
     users: UserDto[] = [];
     userId:number;
     friendId:number;
-
+    chat=new ChatDTO();
     chatList:ChatDTO[]=[];
     chatDetails:ChatDTO[];
     userName:string;
@@ -73,19 +73,22 @@ class PagedUsersRequestDto extends PagedRequestDto {
                 this.chatList=this.chatDetails.filter(c=>c.senderId==this.userId && c.receiverId==this.friendId 
                     || c.receiverId==this.userId && c.senderId==this.friendId);
                 console.log(this.chatList);
+
+                for(var i=0;i<this.chatList.length;i++){
+                  if(this.chatList[i].isRead!=true && this.chatList[i].receiverId==this.userId){
+                    this.chat=this.chatList[i];
+                   this.chat.isRead=true;
+                   this.chatService.update(this.chat).subscribe(
+                     res=>{
+                       console.log("isread=true");
+                     }
+                   )
+                  }
+       
+                }
           }
         });
-         /*for(var i=0;i<this.chatDetails.length;i++){
-           if(this.chatDetails[i].isRead!=true){
-            this.chatDetails[i].isRead=true;
-            this.chatService.update(this.chatDetails[i]).subscribe(
-              res=>{
-                console.log("isread=true");
-              }
-            )
-           }
-
-         }*/
+        
       });
         
       }
