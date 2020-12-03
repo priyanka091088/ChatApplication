@@ -43,6 +43,7 @@ class PagedUsersRequestDto extends PagedRequestDto {
         finishedCallback: Function
       ): void {
         request.keyword = this.keyword;
+       
         this.route.paramMap.subscribe((params: ParamMap) => {
           this.friendId = +params.get('id');
           console.log(this.friendId)
@@ -81,6 +82,7 @@ class PagedUsersRequestDto extends PagedRequestDto {
                    this.chatService.update(this.chat).subscribe(
                      res=>{
                        console.log("isread=true");
+                       this.refreshPage();
                      }
                    )
                   }
@@ -92,7 +94,9 @@ class PagedUsersRequestDto extends PagedRequestDto {
       });
         
       }
-    
+      refreshPage(): void {
+        window.location.reload();
+    }
       protected delete(user: UserDto): void {
       }
 
@@ -122,6 +126,6 @@ class PagedUsersRequestDto extends PagedRequestDto {
           }
         }
       );
-        //this.EditMyMessage=!this.EditMyMessage;
+       
     }
   }

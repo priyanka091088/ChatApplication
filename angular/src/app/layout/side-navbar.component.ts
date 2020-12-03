@@ -5,6 +5,7 @@ import { PagedListingComponentBase, PagedRequestDto } from '@shared/paged-listin
 import { ChatDTO, ChatServiceProxy, UserDto, UserDtoPagedResultDto, UserServiceProxy } from '@shared/service-proxies/service-proxies';
 import { AppSessionService } from '@shared/session/app-session.service';
 import { SSL_OP_SSLEAY_080_CLIENT_DH_BUG } from 'constants';
+import { Subscription } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 
 class PagedUsersRequestDto extends PagedRequestDto {
@@ -18,6 +19,8 @@ class PagedUsersRequestDto extends PagedRequestDto {
     styleUrls: ['./side-navbar.component.css']
   })
   export class SideNavBarComponent extends PagedListingComponentBase<UserDto>{
+    private updateSubscription: Subscription;
+
     keyword = '';
     isActive: boolean | null;
     users: UserDto[] = [];
@@ -25,7 +28,7 @@ class PagedUsersRequestDto extends PagedRequestDto {
     chatList:ChatDTO[];
     counter:number[]=[];
     userId:number;
-    a:number=0;
+    
     constructor(injector: Injector, private router: Router,private userService:UserServiceProxy,
       private appservice:AppSessionService,private chatService:ChatServiceProxy,private route:ActivatedRoute) {
         super(injector);
@@ -79,13 +82,12 @@ class PagedUsersRequestDto extends PagedRequestDto {
                 for(var i=0;i<this.users.length;i++){
           
                   if(this.users[i].id!=this.userId){
-                    
+                    console.log(this.users[i].id)
                       this.chatList=this.chatDetails.filter(c=>c.isRead==false && ((c.senderId==this.userId && c.receiverId==this.users[i].id) 
                         || (c.receiverId==this.userId && c.senderId==this.users[i].id)));
                         console.log(this.chatList)
-                    this.counter[this.a]=this.chatList.length;
-                    console.log(this.a);
-                    this.a++;
+                    this.counter[i]=this.chatList.length;
+                    
                   }
                 }
                 console.log(this.counter);

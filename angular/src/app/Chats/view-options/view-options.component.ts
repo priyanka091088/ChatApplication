@@ -66,7 +66,12 @@ class PagedUsersRequestDto extends PagedRequestDto {
                       
                     })
                   )
-                  .subscribe(() => {});
+                  .subscribe(() => {
+                    this.refresh();
+                  });
               }
       }
+      refresh(): void {
+        window.location.reload();
+    }
   }
