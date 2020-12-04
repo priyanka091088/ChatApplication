@@ -51,6 +51,7 @@ class PagedUsersRequestDto extends PagedRequestDto {
           this.userService.get(this.friendId).subscribe(
           res=>{
               this.userName=res.userName;
+              
           }
       )
       let userdetail=this.appservice.user;

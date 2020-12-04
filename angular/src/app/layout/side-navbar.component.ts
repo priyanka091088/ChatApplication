@@ -1,10 +1,10 @@
-import { Component, Injector, OnInit } from '@angular/core';
+import { Component, EventEmitter, Injector, OnInit, Output } from '@angular/core';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { AppComponentBase } from '@shared/app-component-base';
 import { PagedListingComponentBase, PagedRequestDto } from '@shared/paged-listing-component-base';
 import { ChatDTO, ChatServiceProxy, UserDto, UserDtoPagedResultDto, UserServiceProxy } from '@shared/service-proxies/service-proxies';
 import { AppSessionService } from '@shared/session/app-session.service';
-import { SSL_OP_SSLEAY_080_CLIENT_DH_BUG } from 'constants';
+
 import { Subscription } from 'rxjs';
 import { finalize } from 'rxjs/operators';
 
@@ -76,6 +76,7 @@ class PagedUsersRequestDto extends PagedRequestDto {
           )
           .subscribe({
             next:res => {
+              
                 this.users = res.items;
                 console.log(this.users);
 
@@ -87,17 +88,18 @@ class PagedUsersRequestDto extends PagedRequestDto {
                         || (c.receiverId==this.userId && c.senderId==this.users[i].id)));
                         console.log(this.chatList)
                     this.counter[i]=this.chatList.length;
-                    
+                    if(this.counter[i]!=0){
+                      
+                    }
                   }
                 }
                 console.log(this.counter);
-               
           }
         });
         });
         
       }
       
-      protected delete(user: UserDto): void {
+     protected delete(user: UserDto): void {
       }
   }

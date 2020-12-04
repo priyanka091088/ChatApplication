@@ -112,5 +112,6 @@ import {EditChatDialogComponent} from './Chats/edit-chat/edit-chat.component';
     ViewOptionsComponent,
     EditChatDialogComponent
   ],
+  
 })
 export class AppModule {}

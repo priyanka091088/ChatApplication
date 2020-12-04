@@ -1,5 +1,7 @@
-﻿using Abp.AspNetCore.SignalR.Hubs;
+﻿using Abp;
+using Abp.AspNetCore.SignalR.Hubs;
 using Abp.Dependency;
+using Abp.Notifications;
 using Abp.Runtime.Session;
 using Castle.Core.Logging;
 using Microsoft.AspNetCore.SignalR;
@@ -15,21 +17,25 @@ namespace ChatApplication.Hubs
     {
          public IAbpSession AbpSession { get; set; }
 
-         public ILogger Logger { get; set; }
+        private readonly INotificationPublisher _notificationPublisher;
 
-         public MyChatHub()
+
+        public MyChatHub(INotificationPublisher notificationPublisher)
          {
              AbpSession = NullAbpSession.Instance;
-             Logger = NullLogger.Instance;
+            _notificationPublisher = notificationPublisher;
          }
-
+        /*public async Task Publish_SentFrendshipRequest(string senderUserName, string friendshipMessage, UserIdentifier targetUserId)
+        {
+            await _notificationPublisher.PublishAsync("SentFrendshipRequest", new SentFrendshipRequestNotificationData(senderUserName, friendshipMessage), userIds: new[] { targetUserId });
+        }*/
         public async Task SendMessage(string message)
         {
             var message1 = "admin" +message;
             await Clients.All.SendAsync("getMessage", string.Format("Your friend {0}: {1}", AbpSession.UserId, message1));
         }
 
-        public override async Task OnConnectedAsync()
+       /* public override async Task OnConnectedAsync()
         {
             await base.OnConnectedAsync();
             Logger.Debug("A client connected to MyChatHub: " + Context.ConnectionId);
@@ -39,6 +45,6 @@ namespace ChatApplication.Hubs
         {
             await base.OnDisconnectedAsync(exception);
             Logger.Debug("A client disconnected from MyChatHub: " + Context.ConnectionId);
-        }
+        }*/
     }
 }
