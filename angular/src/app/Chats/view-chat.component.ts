@@ -19,10 +19,10 @@ class PagedUsersRequestDto extends PagedRequestDto {
     templateUrl: './view-chat.component.html',
     styleUrls: ['./view-chat.component.css']
   })
-  export class ViewChatComponent extends PagedListingComponentBase<UserDto>{
+  export class ViewChatComponent extends PagedListingComponentBase<ChatDTO>{
     keyword = '';
     isActive: boolean | null;
-
+check:boolean=false;
     users: UserDto[] = [];
     userId:number;
     friendId:number;
@@ -90,7 +90,7 @@ class PagedUsersRequestDto extends PagedRequestDto {
        
                 }
           }
-        });
+          });
         
       });
         
@@ -98,7 +98,7 @@ class PagedUsersRequestDto extends PagedRequestDto {
       refreshPage(): void {
         window.location.reload();
     }
-      protected delete(user: UserDto): void {
+      protected delete(chat: ChatDTO): void {
       }
 
       SendMessage(id?:number): void {

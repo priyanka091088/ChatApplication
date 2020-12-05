@@ -39,9 +39,9 @@ namespace ChatApplication.Services.Chats
             await _chat.InsertAsync(chat);
             CurrentUnitOfWork.SaveChanges();
 
-            await _hubContext.Clients.User(input.receiverId.ToString()).SendAsync("getFriendMessage", string.Format("{0} sent a message -> {1} ", user.UserName,input.Message));
+            await _hubContext.Clients.User(input.receiverId.ToString()).SendAsync("getFriendMessage", string.Format("{0}  => {1} ", user.UserName,input.Message));
             
-            UserIdentifier identifier = new UserIdentifier(AbpSession.TenantId, user.Id);
+           // UserIdentifier identifier = new UserIdentifier(AbpSession.TenantId, user.Id);
             //await _notificationSubscriptionManager.SubscribeAsync(new UserIdentifier(1, user.Id), "NewMessage");
             //await _notificationPublisher.PublishAsync("NewMessage", new SentFrendshipRequestNotificationData("Test", "New Message"), userIds: new[] { identifier });
 

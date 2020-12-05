@@ -11,6 +11,9 @@ import * as $ from 'jquery';
 })
 export class AppComponent extends AppComponentBase implements OnInit {
   sidebarExpanded: boolean;
+
+  timeLeft: number = 10;
+  interval;
   @Output() onSave = new EventEmitter<any>();
 
   constructor(
@@ -34,15 +37,25 @@ export class AppComponent extends AppComponentBase implements OnInit {
           chatHub = connection; // Save a reference to the hub
       
           connection.on('getFriendMessage', function (message:string) { // Register for incoming messages
-              
-            console.log('received message: ' + message);
             
-            abp.notify.info(message,"",{timer: 10000});
-
+            console.log('received message: ' + message);
+           
+            abp.notify.info(message,"",{timer:10000});
+            
+            /*this.interval = setInterval(() => {
+              if(this.timeLeft > 0) {
+                this.timeLeft--;
+              } else {
+                window.location.reload();
+                clearInterval(this.interval);
+              }
+            },1000)*/
+           
           });
           }).then(function (connection) {
               abp.log.debug('Sent Message To Friend!');
               abp.event.trigger('myChatHub.receivedMessage');
+             
           });        
          
         abp.event.on('myChatHub.receivedMessage', function() { // Register for connect event
