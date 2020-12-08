@@ -29,7 +29,7 @@ class PagedUsersRequestDto extends PagedRequestDto {
     chatList:ChatDTO[];
     counter:number[]=[];
     userId:number;
-   
+   chats:Chat;
     constructor(injector: Injector, private router: Router,private userService:UserServiceProxy,
       private appservice:AppSessionService,private chatService:ChatServiceProxy,private route:ActivatedRoute
       ,private service:ChatServivce) {
@@ -80,6 +80,38 @@ class PagedUsersRequestDto extends PagedRequestDto {
           )
           .subscribe({
             next:res => {
+
+              
+          $.getScript(AppConsts.appBaseUrl + '/assets/abp/abp.signalr-client.js', () => {
+
+            var chatHub = null;
+           
+              abp.signalr.startConnection(abp.appPath + 'signalr-myChatHub',(connection)=> {
+                chatHub = connection; // Save a reference to the hub
+            
+                connection.on('getFriendMessage',(message:string,object:Chat)=> { // Register for incoming messages
+                  
+                  console.log('received message: ' + message);
+                 
+                  abp.notify.info(message,"",{timer:10000});
+
+                                
+                  this.users = res.items;
+                  for(var i=0;i<this.users.length;i++){
+          
+                    if(object.receiverId==this.userId && this.users[i].id==object.senderId){
+                        
+                      this.counter[i]=object.counter;
+                    }
+                }
+                });
+                }).then(function (connection) {
+                    abp.log.debug('Sent Message To Friend!');
+                    abp.event.trigger('myChatHub.receivedMessage');
+                   
+                });        
+            
+          });
               
                 this.users = res.items;
                 console.log(this.users);

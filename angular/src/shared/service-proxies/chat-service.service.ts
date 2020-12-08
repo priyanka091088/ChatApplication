@@ -1,14 +1,14 @@
-import { Injectable } from "@angular/core";
+import { EventEmitter, Injectable } from "@angular/core";
 import { Chat } from "@app/layout/chat.model";
 import { AppConsts } from "@shared/AppConsts";
 import { SignalRAspNetCoreHelper } from "@shared/helpers/SignalRAspNetCoreHelper";
-
+import * as $ from 'jquery';
 
 @Injectable({
     providedIn: 'root'
   })
   export class ChatServivce {
-    chat:Chat;
+    chat=new EventEmitter<Chat>();
 
     constructor() { }
 
@@ -19,38 +19,20 @@ import { SignalRAspNetCoreHelper } from "@shared/helpers/SignalRAspNetCoreHelper
 
             var chatHub = null;
            
-              abp.signalr.startConnection(abp.appPath + 'signalr-myChatHub', function (connection) {
+              abp.signalr.startConnection(abp.appPath + 'signalr-myChatHub',(connection)=> {
                 chatHub = connection; // Save a reference to the hub
             
-                connection.on('getFriendMessage', function (message:string) { // Register for incoming messages
+                connection.on('getFriendMessage',(message:string,chats:Chat) =>{ // Register for incoming messages
                   
                   console.log('received message: ' + message);
-                 
-                  return message;
-                 // abp.notify.info(message,"",{timer:10000});
-                  
-                  
-                  /*this.interval = setInterval(() => {
-                    if(this.timeLeft > 0) {
-                      this.timeLeft--;
-                    } else {
-                      window.location.reload();
-                      clearInterval(this.interval);
-                    }
-                  },1000)*/
+                 abp.notify.info(message,"",{timer:10000});
+                  this.chat.emit()
                  
                 });
-                }).then(function (connection) {
-                    abp.log.debug('Sent Message To Friend!');
-                    abp.event.trigger('myChatHub.receivedMessage');
-                   
-                });        
-               
-              abp.event.on('myChatHub.receivedMessage', function() { // Register for connect event
-                chatHub.invoke('sendMessage', "Sent You A message"); // Send a message to the server
-            });
+                })
+                
+             });
             
-          });
         
     }
 

@@ -13,6 +13,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Dynamic.Core;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -34,28 +35,22 @@ namespace ChatApplication.Services.Chats
         }
         public override async Task<ChatDTO> CreateAsync(ChatDTO input)
         {
-            ArrayList counter = new ArrayList();
-            var a = 0;
+            
             var user = await _userManager.FindByIdAsync(input.senderId.ToString());
             var chat = ObjectMapper.Map<Chat>(input);
             await _chat.InsertAsync(chat);
             CurrentUnitOfWork.SaveChanges();
 
-            /*var users = _userManager.Users.ToList();
-            var chatList = _chat.GetAll();
-            foreach (var item in users)
-            {
-                if (item.Id != input.receiverId)
-                {
-                    var chatDetails = chatList.Where(c => c.isRead == false && (c.senderId == item.Id && c.receiverId == input.receiverId));
-                    counter[a++] = chatDetails.Count();
-                }
-                
-            }*/
+            var chats = _chat.GetAll().Where(c => c.isRead == false && c.senderId == input.senderId && c.receiverId == input.receiverId).ToList();
+            MessagesDTO obj = new MessagesDTO();
+            obj.message = input.Message;
+            obj.senderId = input.senderId;
+            obj.receiverId = input.receiverId;
+            obj.counter = chats.Count();
             
 
             await _hubContext.Clients.User(input.receiverId.ToString()).SendAsync
-                ("getFriendMessage", string.Format("{0}  => {1} ", user.UserName,input.Message));
+                ("getFriendMessage", string.Format("{0}  => {1} ", user.UserName,input.Message),obj);
             return MapToEntityDto(chat);
         }
         public override async Task<ChatDTO> UpdateAsync(ChatDTO input)
@@ -66,6 +61,13 @@ namespace ChatApplication.Services.Chats
             CurrentUnitOfWork.SaveChanges();
             return MapToEntityDto(chats);
 
+        }
+        public int getNumberOfUnreadMessages(long senderId,long? receiverId)
+        {
+            var chatList = _chat.GetAll().ToList();
+            var chatDetails = chatList.Where(c => c.isRead == false && c.senderId == senderId && c.receiverId == receiverId).ToList();
+
+            return chatDetails.Count;
         }
     }
 }

@@ -29,39 +29,7 @@ export class AppComponent extends AppComponentBase implements OnInit {
     
     SignalRAspNetCoreHelper.initSignalR();
 
-    $.getScript(AppConsts.appBaseUrl + '/assets/abp/abp.signalr-client.js', () => {
-
-      var chatHub = null;
-     
-        abp.signalr.startConnection(abp.appPath + 'signalr-myChatHub', function (connection) {
-          chatHub = connection; // Save a reference to the hub
-      
-          connection.on('getFriendMessage', function (message:string) { // Register for incoming messages
-            
-            console.log('received message: ' + message);
-           
-            abp.notify.info(message,"",{timer:10000});
-            
-            //reloads the component every time user receieves a notifiaction
-            this.interval = setInterval(() => {
-              if(this.timeLeft > 0) {
-                this.timeLeft--;
-              } else {
-                window.location.reload();
-                clearInterval(this.interval);
-              }
-            },1000)
-           
-          });
-          }).then(function (connection) {
-              abp.log.debug('Sent Message To Friend!');
-              abp.event.trigger('myChatHub.receivedMessage');
-             
-          });        
-      
-    });
-
-    abp.event.on('abp.notifications.received', (userNotification) => {
+      abp.event.on('abp.notifications.received', (userNotification) => {
       abp.notifications.showUiNotifyForUserNotification(userNotification);
 
       // Desktop notification

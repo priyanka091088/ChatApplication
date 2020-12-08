@@ -1,4 +1,6 @@
 export interface Chat{
     message:string,
-    unreadMessages:number[]
+    counter:number,
+    senderId:number,
+    receiverId:number
 }
