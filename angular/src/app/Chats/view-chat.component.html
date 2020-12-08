@@ -14,10 +14,11 @@
       </div>
     </div>
   </section>
-<div *ngFor="let c of chatList">
-    <label *ngIf="c.senderId==userId">Me:&nbsp;&nbsp;&nbsp;<button (click)="ShowOptions(c.id)">{{c.message}}</button><br><i> 
+<div *ngFor="let c of showChat">
+    <label *ngIf="c.senderId==userId">Me:&nbsp;&nbsp;&nbsp;<button (click)="ShowOptions(c.id)">{{c.message}}</button><br>
+      <i style="font-size: smaller;"> 
         {{c.creationTime | date:'medium'}}</i></label>
         
     <label *ngIf="c.senderId==friendId">{{userName}}:&nbsp;&nbsp;&nbsp;<button>{{c.message}}</button><br>
-         <i>{{c.creationTime | date:'medium'}}</i></label>
+         <i style="font-size: small;">{{c.creationTime | date:'medium'}}</i></label>
          </div>

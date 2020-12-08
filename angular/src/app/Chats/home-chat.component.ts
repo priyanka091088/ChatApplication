@@ -1,5 +1,5 @@
-  
-import { Component, Injector, OnInit } from '@angular/core';
+import { getLocaleDateTimeFormat } from '@angular/common';
+import { ChangeDetectionStrategy, Component, Injector, OnInit } from '@angular/core';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { AppComponentBase } from '@shared/app-component-base';
 import { PagedListingComponentBase, PagedRequestDto } from '@shared/paged-listing-component-base';
@@ -17,23 +17,26 @@ class PagedUsersRequestDto extends PagedRequestDto {
   
 @Component({
     selector: 'view-chat',
-    templateUrl: './view-chat.component.html',
-    styleUrls: ['./view-chat.component.css']
+    templateUrl: './home-chat.component.html',
+    styleUrls: ['./home-chat.component.css'],
+    changeDetection: ChangeDetectionStrategy.Default
   })
-  export class ViewChatComponent extends PagedListingComponentBase<ChatDTO>{
+  export class HomeChatComponent extends PagedListingComponentBase<ChatDTO>{
     keyword = '';
     isActive: boolean | null;
 
     users: UserDto[] = [];
     userId:number;
     friendId:number;
-    userName:string;
 
     chat=new ChatDTO();
-    chatList:ChatDTO[]=[];
-    chatDetails:ChatDTO[];
+    chatDetails:ChatDTO[]=[];
     showChat:ChatDTO[]=[];
+    chatList:ChatDTO[];
     
+    userName:string;
+    counter:number[]=[];
+
     constructor(injector: Injector, private router: Router,private userService:UserServiceProxy,
         private appservice:AppSessionService,private chatService:ChatServiceProxy,private route:ActivatedRoute
         ,private _modalService: BsModalService) {
@@ -47,15 +50,6 @@ class PagedUsersRequestDto extends PagedRequestDto {
         request.keyword = this.keyword;
        
         this.route.paramMap.subscribe((params: ParamMap) => {
-          this.friendId = +params.get('id');
-          console.log(this.friendId)
-
-          this.userService.get(this.friendId).subscribe(
-          res=>{
-              this.userName=res.userName;
-              
-          }
-      )
       let userdetail=this.appservice.user;
         this.userId=userdetail.id;
         console.log(this.userId);
@@ -73,34 +67,41 @@ class PagedUsersRequestDto extends PagedRequestDto {
           )
           .subscribe({
             next:res => {
-              var count=0;
-
-              //getting the conversation between two users
-                this.chatDetails = res.items;
-                this.chatList=this.chatDetails.filter(c=>c.senderId==this.userId && c.receiverId==this.friendId 
-                    || c.receiverId==this.userId && c.senderId==this.friendId);
-                console.log(this.chatList);
-
-                for(var j=this.chatList.length-1;j>=0;j--){
-                  this.showChat[j]=this.chatList[count++];
-                }
-
-                //updating the isRead property of the message to true
-                for(var i=0;i<this.chatList.length;i++){
-                  if(this.chatList[i].isRead!=true && this.chatList[i].receiverId==this.userId){
-                    this.chat=this.chatList[i];
-                   this.chat.isRead=true;
-                   this.chatService.update(this.chat).subscribe(
-                     res=>{
-                       console.log("isread=true");
-                       this.refreshPage();
-                     }
-                   )
-                  }
-       
-                }
+              this.chatDetails=res.items;
+              console.log(this.chatDetails)
           }
           });
+
+          this.userService
+          .getAll(
+            request.keyword,
+            request.isActive,
+            request.skipCount,
+            request.maxResultCount
+          )
+          .pipe(
+            finalize(() => {
+              finishedCallback();
+            })
+          )
+          .subscribe({
+            next:res => {
+              
+                this.users = res.items;
+                console.log(this.users);
+
+                for(var i=0;i<this.users.length;i++){
+          
+                  if(this.users[i].id!=this.userId){
+                      this.chatList=this.chatDetails.filter(c=>c.isRead==false &&  (c.receiverId==this.userId && c.senderId==this.users[i].id));
+                        console.log(this.chatList)
+                    this.counter[i]=this.chatList.length;
+                    
+                  }
+                }
+                console.log(this.counter);
+          }
+        });
         
       });
         

@@ -10,17 +10,17 @@ using System.Threading.Tasks;
 namespace ChatApplication.Services.DTO
 {
     [AutoMap(typeof(Chat))]
-   public class ChatDTO:EntityDto
+   public class ChatDTO:FullAuditedEntityDto
     {
         public string Message { get; set; }
-        public virtual DateTime CreationTime { get; set; }
+        //public virtual DateTime CreationTime { get; set; }
         public bool isRead { get; set; }
         public long? senderId { get; set; }
         public long? receiverId { get; set; }
 
-        public ChatDTO()
+        /*public ChatDTO()
         {
             CreationTime = DateTime.Now;
-        }
+        }*/
     }
 }

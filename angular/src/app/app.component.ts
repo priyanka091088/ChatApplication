@@ -42,14 +42,15 @@ export class AppComponent extends AppComponentBase implements OnInit {
            
             abp.notify.info(message,"",{timer:10000});
             
-            /*this.interval = setInterval(() => {
+            //reloads the component every time user receieves a notifiaction
+            this.interval = setInterval(() => {
               if(this.timeLeft > 0) {
                 this.timeLeft--;
               } else {
                 window.location.reload();
                 clearInterval(this.interval);
               }
-            },1000)*/
+            },1000)
            
           });
           }).then(function (connection) {
@@ -57,10 +58,6 @@ export class AppComponent extends AppComponentBase implements OnInit {
               abp.event.trigger('myChatHub.receivedMessage');
              
           });        
-         
-        abp.event.on('myChatHub.receivedMessage', function() { // Register for connect event
-          chatHub.invoke('sendMessage', "Sent You A message"); // Send a message to the server
-      });
       
     });
 

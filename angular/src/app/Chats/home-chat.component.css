@@ -1,16 +1,4 @@
-button {
-    background: none!important;
-    border: none;
-    padding: 0!important;
-    /*optional*/
-    font-family: arial, sans-serif;
-    /*input has OS specific font-family*/
-    color:black;
-    text-decoration: none;
-    cursor: pointer;
-  }
-
-  body {
+body {
     font-family: "Lato", sans-serif;
     display:inline-block;
     background-color:black;

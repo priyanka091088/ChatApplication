@@ -11,11 +11,11 @@ using System.Threading.Tasks;
 
 namespace ChatApplication.Domain
 {
-    public class Chat:Entity
+    public class Chat: FullAuditedEntity
     {
         [Required]
         public string Message { get; set; }
-        public virtual DateTime CreationTime { get; set; }
+        //public virtual DateTime CreationTime { get; set; }
         public bool isRead { get; set; }
 
         public long? senderId { get; set; }
@@ -26,9 +26,9 @@ namespace ChatApplication.Domain
         [ForeignKey("receiverId ")]
         public User Receiver { get; set; }
 
-        public Chat()
+        /*public Chat()
         {
             CreationTime = DateTime.Now;
-        }
+        }*/
     }
 }

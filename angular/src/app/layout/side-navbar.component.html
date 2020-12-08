@@ -12,7 +12,7 @@
         <a>Users</a>
         <div *ngFor="let u of users;index as i">
           <a *ngIf="u.id != userId" [routerLink]="['/app/viewchat',u.id]"><i>{{u.userName}}</i>&nbsp;&nbsp;
-            <label style="color: rgb(199, 36, 36);">({{counter[i]}} unread)</label></a>
+            <span id="count"  *ngIf="counter[i]>0" style="color: rgb(199, 36, 36);">({{counter[i]}} unread)</span></a>
          
         </div>
     </div>
