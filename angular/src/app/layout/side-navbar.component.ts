@@ -1,9 +1,7 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, Injector, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
-import { AppComponentBase } from '@shared/app-component-base';
 import { AppConsts } from '@shared/AppConsts';
 import { PagedListingComponentBase, PagedRequestDto } from '@shared/paged-listing-component-base';
-import { ChatServivce } from '@shared/service-proxies/chat-service.service';
 import { ChatDTO, ChatServiceProxy, UserDto, UserDtoPagedResultDto, UserServiceProxy } from '@shared/service-proxies/service-proxies';
 import { AppSessionService } from '@shared/session/app-session.service';
 import * as $ from 'jquery';
@@ -29,10 +27,9 @@ class PagedUsersRequestDto extends PagedRequestDto {
     chatList:ChatDTO[];
     counter:number[]=[];
     userId:number;
-   chats:Chat;
+   
     constructor(injector: Injector, private router: Router,private userService:UserServiceProxy,
-      private appservice:AppSessionService,private chatService:ChatServiceProxy,private route:ActivatedRoute
-      ,private service:ChatServivce) {
+      private appservice:AppSessionService,private chatService:ChatServiceProxy,private route:ActivatedRoute) {
         super(injector);
       }
 
@@ -93,7 +90,7 @@ class PagedUsersRequestDto extends PagedRequestDto {
                   
                   console.log('received message: ' + message);
                  
-                  abp.notify.info(message,"",{timer:10000});
+                  abp.notify.info(message,"",{timer:8000});
 
                                 
                   this.users = res.items;

@@ -24,14 +24,13 @@ namespace ChatApplication.Services.Chats
         private readonly IHubContext<MyChatHub> _hubContext;
         private readonly IRepository<Chat> _chat;
         private readonly UserManager _userManager;
-        private readonly IUserAppService _userRepository;
         public ChatApplicationService(IRepository<Chat> repository,IRepository<Chat> chat, 
-            IHubContext<MyChatHub> hubContext, UserManager userManager, IUserAppService userRepository) :base(repository)
+            IHubContext<MyChatHub> hubContext, UserManager userManager) :base(repository)
         {
             _chat = chat;
             _hubContext = hubContext;
             _userManager = userManager;
-            _userRepository = userRepository;
+            
         }
         public override async Task<ChatDTO> CreateAsync(ChatDTO input)
         {
@@ -61,13 +60,6 @@ namespace ChatApplication.Services.Chats
             CurrentUnitOfWork.SaveChanges();
             return MapToEntityDto(chats);
 
-        }
-        public int getNumberOfUnreadMessages(long senderId,long? receiverId)
-        {
-            var chatList = _chat.GetAll().ToList();
-            var chatDetails = chatList.Where(c => c.isRead == false && c.senderId == senderId && c.receiverId == receiverId).ToList();
-
-            return chatDetails.Count;
         }
     }
 }

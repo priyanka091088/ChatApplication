@@ -13,7 +13,7 @@ import { AppSessionService } from '@shared/session/app-session.service';
 import { BsModalRef } from 'ngx-bootstrap/modal';
 import { finalize } from 'rxjs/operators';
 import * as $ from 'jquery';
-import { ChatServivce } from '@shared/service-proxies/chat-service.service';
+
   @Component({
     templateUrl: 'send-chat-dialog.component.html'
   })
@@ -32,7 +32,7 @@ import { ChatServivce } from '@shared/service-proxies/chat-service.service';
     constructor(injector: Injector,
         private chatService:ChatServiceProxy,
         public bsModalRef: BsModalRef,private route:ActivatedRoute,
-        private router:Router,private appservice:AppSessionService,private service:ChatServivce){
+        private router:Router,private appservice:AppSessionService){
         super(injector);
     }
       ngOnInit(): void {

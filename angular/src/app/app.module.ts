@@ -11,7 +11,7 @@ import { NgxPaginationModule } from 'ngx-pagination';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ServiceProxyModule } from '@shared/service-proxies/service-proxy.module';
-import { ChatServivce } from '@shared/service-proxies/chat-service.service';
+
 import { SharedModule } from '@shared/shared.module';
 import { HomeComponent } from '@app/home/home.component';
 import { AboutComponent } from '@app/about/about.component';
@@ -45,7 +45,7 @@ import {ViewChatComponent} from './Chats/view-chat.component';
 import {SendChatDialogComponent} from './Chats/send-chat/send-chat-dialog.component';
 import {ViewOptionsComponent} from './Chats/view-options/view-options.component';
 import {EditChatDialogComponent} from './Chats/edit-chat/edit-chat.component';
-import {HomeChatComponent} from './Chats/home-chat.component';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -80,8 +80,7 @@ import {HomeChatComponent} from './Chats/home-chat.component';
     ViewChatComponent,
     SendChatDialogComponent,
     ViewOptionsComponent,
-    EditChatDialogComponent,
-    HomeChatComponent
+    EditChatDialogComponent
   ],
   imports: [
     CommonModule,
@@ -98,7 +97,7 @@ import {HomeChatComponent} from './Chats/home-chat.component';
     SharedModule,
     NgxPaginationModule,
   ],
-  providers: [ChatServivce],
+  providers: [],
   entryComponents: [
     // tenants
     CreateTenantDialogComponent,

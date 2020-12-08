@@ -15,7 +15,6 @@ namespace ChatApplication.Domain
     {
         [Required]
         public string Message { get; set; }
-        //public virtual DateTime CreationTime { get; set; }
         public bool isRead { get; set; }
 
         public long? senderId { get; set; }
@@ -25,10 +24,5 @@ namespace ChatApplication.Domain
         public long? receiverId { get; set; }
         [ForeignKey("receiverId ")]
         public User Receiver { get; set; }
-
-        /*public Chat()
-        {
-            CreationTime = DateTime.Now;
-        }*/
     }
 }

@@ -1,7 +1,9 @@
   
-import { Component, Injector, OnInit } from '@angular/core';
+import { Component, EventEmitter, Injector, OnInit, Output } from '@angular/core';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
+import { Chat } from '@app/layout/chat.model';
 import { AppComponentBase } from '@shared/app-component-base';
+import { AppConsts } from '@shared/AppConsts';
 import { PagedListingComponentBase, PagedRequestDto } from '@shared/paged-listing-component-base';
 import { ChatDTO, ChatServiceProxy, UserDto, UserDtoPagedResultDto, UserServiceProxy } from '@shared/service-proxies/service-proxies';
 import { AppSessionService } from '@shared/session/app-session.service';
@@ -9,7 +11,8 @@ import { BsModalRef, BsModalService } from 'ngx-bootstrap/modal';
 import { finalize } from 'rxjs/operators';
 import { SendChatDialogComponent } from './send-chat/send-chat-dialog.component';
 import { ViewOptionsComponent } from './view-options/view-options.component';
-
+import * as $ from 'jquery';
+import { runInThisContext } from 'vm';
 class PagedUsersRequestDto extends PagedRequestDto {
     keyword: string;
     isActive: boolean | null;
@@ -21,6 +24,8 @@ class PagedUsersRequestDto extends PagedRequestDto {
     styleUrls: ['./view-chat.component.css']
   })
   export class ViewChatComponent extends PagedListingComponentBase<ChatDTO>{
+    @Output() onSave = new EventEmitter<any>();
+    saving = false;
     keyword = '';
     isActive: boolean | null;
 
@@ -38,6 +43,7 @@ class PagedUsersRequestDto extends PagedRequestDto {
         private appservice:AppSessionService,private chatService:ChatServiceProxy,private route:ActivatedRoute
         ,private _modalService: BsModalService) {
         super(injector);
+        
       }
     list(
         request: PagedUsersRequestDto,
@@ -85,19 +91,16 @@ class PagedUsersRequestDto extends PagedRequestDto {
                   this.showChat[j]=this.chatList[count++];
                 }
 
-                //updating the isRead property of the message to true
                 for(var i=0;i<this.chatList.length;i++){
                   if(this.chatList[i].isRead!=true && this.chatList[i].receiverId==this.userId){
                     this.chat=this.chatList[i];
                    this.chat.isRead=true;
-                   this.chatService.update(this.chat).subscribe(
-                     res=>{
-                       console.log("isread=true");
-                       this.refreshPage();
-                     }
-                   )
+                   this.chatService
+                    .update(this.chat).subscribe(() => {
+                      console.log("isRead= true");
+                      this.refreshPage();
+                    });
                   }
-       
                 }
           }
           });
