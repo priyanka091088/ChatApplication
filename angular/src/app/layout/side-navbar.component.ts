@@ -91,9 +91,9 @@ class PagedUsersRequestDto extends PagedRequestDto {
                   console.log('received message: ' + message);
                  
                   abp.notify.info(message,"",{timer:8000});
-
-                                
+                  
                   this.users = res.items;
+                  
                   for(var i=0;i<this.users.length;i++){
           
                     if(object.receiverId==this.userId && this.users[i].id==object.senderId){

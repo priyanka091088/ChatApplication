@@ -28,7 +28,7 @@ class PagedUsersRequestDto extends PagedRequestDto {
     saving = false;
     keyword = '';
     isActive: boolean | null;
-
+    request: PagedUsersRequestDto;
     users: UserDto[] = [];
     userId:number;
     friendId:number;
@@ -80,6 +80,24 @@ class PagedUsersRequestDto extends PagedRequestDto {
           .subscribe({
             next:res => {
               var count=0;
+
+              $.getScript(AppConsts.appBaseUrl + '/assets/abp/abp.signalr-client.js', () => {
+
+                var chatHub = null;
+               
+                  abp.signalr.startConnection(abp.appPath + 'signalr-myChatHub',(connection)=> {
+                    chatHub = connection; // Save a reference to the hub
+                
+                    connection.on('getFriendMessage',(message:string,object:Chat)=> { // Register for incoming messages
+                          
+                      if(object.senderId==this.friendId && object.receiverId==this.userId){
+                            this.list(request,pageNumber,finishedCallback); 
+                          }
+                                                                       
+                    });
+                    })     
+                
+              });
 
               //getting the conversation between two users
                 this.chatDetails = res.items;
