@@ -34,7 +34,7 @@ namespace ChatApplication.Services.Chats
         }
         public override async Task<ChatDTO> CreateAsync(ChatDTO input)
         {
-            
+            int[] array = new int[] { };
             var user = await _userManager.FindByIdAsync(input.senderId.ToString());
             var chat = ObjectMapper.Map<Chat>(input);
             await _chat.InsertAsync(chat);

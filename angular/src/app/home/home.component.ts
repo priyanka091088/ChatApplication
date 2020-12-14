@@ -20,5 +20,7 @@ class PagedUsersRequestDto extends PagedRequestDto {
 export class HomeComponent extends AppComponentBase {
   constructor(injector: Injector) {
     super(injector);
+
+    
   }
 }

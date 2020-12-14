@@ -77,6 +77,16 @@ class PagedUsersRequestDto extends PagedRequestDto {
           )
           .subscribe({
             next:res => {
+              this.users = res.items;
+                for(var i=0;i<this.users.length;i++){
+          
+                  if(this.users[i].id!=this.userId){
+                      this.chatList=this.chatDetails.filter(c=>c.isRead==false &&  (c.receiverId==this.userId && c.senderId==this.users[i].id));
+                        console.log(this.chatList)
+                    this.counter[i]=this.chatList.length;
+                    
+                  }
+                }
 
               
           $.getScript(AppConsts.appBaseUrl + '/assets/abp/abp.signalr-client.js', () => {
@@ -91,37 +101,17 @@ class PagedUsersRequestDto extends PagedRequestDto {
                   console.log('received message: ' + message);
                  
                   abp.notify.info(message,"",{timer:8000});
-                  
-                  this.users = res.items;
-                  
-                  for(var i=0;i<this.users.length;i++){
-          
-                    if(object.receiverId==this.userId && this.users[i].id==object.senderId){
-                        
-                      this.counter[i]=object.counter;
-                    }
-                }
+                 
+                  this.list(request,pageNumber,finishedCallback);
+                                   
                 });
                 }).then(function (connection) {
                     abp.log.debug('Sent Message To Friend!');
-                    abp.event.trigger('myChatHub.receivedMessage');
-                   
                 });        
             
           });
               
-                this.users = res.items;
-                console.log(this.users);
-
-                for(var i=0;i<this.users.length;i++){
-          
-                  if(this.users[i].id!=this.userId){
-                      this.chatList=this.chatDetails.filter(c=>c.isRead==false &&  (c.receiverId==this.userId && c.senderId==this.users[i].id));
-                        console.log(this.chatList)
-                    this.counter[i]=this.chatList.length;
-                    
-                  }
-                }
+                
           }
         });
     
