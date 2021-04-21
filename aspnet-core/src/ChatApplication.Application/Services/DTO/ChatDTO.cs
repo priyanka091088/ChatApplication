@@ -16,5 +16,6 @@ namespace ChatApplication.Services.DTO
         public bool isRead { get; set; }
         public long? senderId { get; set; }
         public long? receiverId { get; set; }
+        public string MyName { get; set; }
     }
 }
